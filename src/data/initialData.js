@@ -82,7 +82,37 @@ export const initialServices = [
 /** Products — same base fields + price & stock */
 
 /** Gallery — same base fields + category & type */
-export const initialGallery = [];
+/** Gallery — same base fields + category & type */
+export const initialGallery = [
+  {
+    id: "g1",
+    title: "Our Operational Warehouse",
+    category: "warehouse", // tabs-இல் உள்ள "warehouse" உடன் பொருந்தும்
+    image: "/images/gal-1.jpg", // public/images/க்குள் இருக்கும் சரியான பெயர்
+    type: "image",
+  },
+  {
+    id: "g2",
+    title: "Premium Quality Products",
+    category: "products", // tabs-இல் உள்ள "products" உடன் பொருந்தும்
+    image: "/images/gal-2.jpg",
+    type: "image",
+  },
+  {
+    id: "g3",
+    title: "Entrepreneurs Network Event",
+    category: "events", // tabs-இல் உள்ள "events" உடன் பொருந்தும்
+    image: "/images/gal-3.jpg",
+    type: "image",
+  },
+  {
+    id: "g4",
+    title: "Official Training Session",
+    category: "events",
+    image: "/images/gal-4.jpg",
+    type: "image",
+  },
+];
 
 export const testimonials = [
   {
