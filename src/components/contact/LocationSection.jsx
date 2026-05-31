@@ -12,7 +12,7 @@ import AnimatedModal from "../ui/AnimatedModal";
 import { COMPANY } from "../../data/initialData";
 
 const MAP_EMBED =
-  "https://www.google.com/maps/d/u/0/edit?mid=1L6N5LPnDmKzl7njMCiZSUVIHcDiW_AY&usp=sharing";
+  "https://www.google.com/maps/d/u/0/embed?mid=1IXoo2HTLpkdYVrEc2vZ6wkq-GmJ7ZZ0&ehbc=2E312F";
 
 <iframe
   title="WMC Office Locations"
@@ -31,7 +31,6 @@ export default function LocationSection() {
         id="location"
         className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen overflow-hidden bg-gradient-to-b from-sky-200 to-sky-100"
       >
-
         <div className="relative mx-auto max-w-7xl px-4 py-16 lg:px-8 lg:py-20">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -151,7 +150,8 @@ export default function LocationSection() {
                 <iframe
                   title="WMC Office Location"
                   src={MAP_EMBED}
-                  className="pointer-events-none absolute inset-0 h-full w-full border-0"
+                  // className-ஐ மட்டும் மாற்றவும்:
+                  className="absolute -top-[60px] left-0 h-[calc(100%+60px)] w-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
@@ -179,13 +179,16 @@ export default function LocationSection() {
             {COMPANY.address}
           </p>
           <div className="overflow-hidden rounded-2xl border-2 border-sky-200 shadow-inner">
-            <iframe
-              title="WMC Full Map"
-              src={MAP_EMBED}
-              className="h-[min(60vh,480px)] w-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            <div className="overflow-hidden rounded-2xl border-2 border-sky-200 shadow-inner h-[480px] relative">
+              <iframe
+                title="WMC Full Map"
+                src={MAP_EMBED}
+                // className-ஐ மட்டும் மாற்றவும்:
+                className="absolute -top-[60px] left-0 h-[calc(100%+60px)] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
           </div>
           <div className="flex flex-wrap gap-3">
             <a
