@@ -5,11 +5,11 @@ const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() =>
-    loadFromStorage("wmc-theme", true)
+    loadFromStorage("wmc-theme", true),
   );
 
   useEffect(() => {
-    saveToStorage("wmc-theme", darkMode);
+    saveToStorage("wEc-theme", darkMode);
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 

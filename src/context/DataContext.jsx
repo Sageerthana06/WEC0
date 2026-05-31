@@ -7,9 +7,9 @@ import { saveGalleryImage, deleteGalleryImage } from "../utils/galleryImageDB";
 const DataContext = createContext(null);
 
 const KEYS = {
-  services: "wmc-services",
-  gallery: "wmc-gallery",
-  messages: "wmc-messages",
+  services: "wEc-services",
+  gallery: "wEc-gallery",
+  messages: "wEc-messages",
 };
 
 function normalizeProduct(p) {

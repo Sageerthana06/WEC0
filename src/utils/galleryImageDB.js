@@ -1,4 +1,4 @@
-const DB_NAME = "wmc-gallery-images";
+const DB_NAME = "wEc-gallery-images";
 const STORE = "photos";
 const DB_VERSION = 1;
 
