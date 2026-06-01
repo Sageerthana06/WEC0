@@ -87,7 +87,7 @@ export const initialGallery = [
     id: "g1",
     title: "Chairman",
     category: "promotion",
-    image: "/images/chairman.png",
+    image: "/photo/chairman.jpg",
     type: "image",
   },
   {
@@ -279,6 +279,69 @@ export const initialGallery = [
     image: "/photo/branch3.jpg",
     type: "image",
   },
+  {
+    id: "g29",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/a.jpg",
+    type: "image",
+  },
+  {
+    id: "g30",
+    title: "Maanager",
+    category: "Promotion#",
+    image: "/photo/b.jpg",
+    type: "image",
+  },
+  {
+    id: "g31",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/c.jpg",
+    type: "image",
+  },
+  {
+    id: "g32",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/d.jpg",
+    type: "image",
+  },
+  {
+    id: "g33",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/e.jpg",
+    type: "image",
+  },
+  {
+    id: "g34",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/f.jpg",
+    type: "image",
+  },
+  {
+    id: "g35",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/g.jpg",
+    type: "image",
+  },
+  {
+    id: "g36",
+    title: "Manager",
+    category: "Promotion#",
+    image: "/photo/h.jpg",
+    type: "image",
+  },
+  {
+    id: "g37",
+    title: "Manager",
+    category: "events",
+    image: "/photo/j.jpg",
+    type: "image",
+  },
 ];
 
 export const testimonials = [
@@ -286,7 +349,7 @@ export const testimonials = [
     id: 1,
     name: "James Mitchell",
     role: "Import Director, UK",
-    text: "WMC streamlined our entire import process. Professional, transparent, and always on schedule.",
+    text: "WEC streamlined our entire import process. Professional, transparent, and always on schedule.",
     avatar:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
   },
@@ -302,7 +365,7 @@ export const testimonials = [
     id: 3,
     name: "Ahmed Al-Rashid",
     role: "Logistics Manager, UAE",
-    text: "From cargo handling to distribution — WMC delivers end-to-end excellence every time.",
+    text: "From cargo handling to distribution — WEC delivers end-to-end excellence every time.",
     avatar:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
   },

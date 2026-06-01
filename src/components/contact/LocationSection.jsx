@@ -17,6 +17,10 @@ const MAP_EMBED =
 
 export default function LocationSection() {
   const [modalOpen, setModalOpen] = useState(false);
+  const phone = COMPANY.whatsapp.replace(/\D/g, "");
+  const waMessage = encodeURIComponent(
+    `Hello ${COMPANY.shortName}, I would like to inquire about your services.`,
+  );
 
   return (
     <>
@@ -104,7 +108,7 @@ export default function LocationSection() {
                   <FaDirections /> Get Directions
                 </motion.a>
                 <motion.a
-                  href="https://wa.me/94770287429"
+                  href={`https://wa.me/${phone}?text=${waMessage}`}
                   target="_blank"
                   className="inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 text-sm font-semibold text-white shadow-lg"
                 >
@@ -121,7 +125,7 @@ export default function LocationSection() {
                 className="relative block h-full min-h-[320px] w-full overflow-hidden rounded-3xl border-4 border-white shadow-2xl transition lg:min-h-[420px]"
               >
                 <iframe
-                  title="WMC Office Location"
+                  title="WEC Office Location"
                   src={MAP_EMBED}
                   className="absolute -top-[60px] left-0 h-[calc(100%+60px)] w-full border-0"
                   loading="lazy"
@@ -135,7 +139,7 @@ export default function LocationSection() {
       <AnimatedModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Office Location — WMC"
+        title="Office Location — WEC"
         size="full"
       >
         <div className="h-[480px] w-full overflow-hidden rounded-2xl border-2 border-sky-200 relative">

@@ -3,7 +3,11 @@ import { motion } from "framer-motion";
 import { COMPANY } from "../../data/initialData";
 
 export default function WhatsAppButton() {
-  const url = `https://wa.me/${COMPANY.whatsapp}?text=Hello%20WMC,%20I%20would%20like%20to%20inquire%20about%20your%20services.`;
+  const phone = COMPANY.whatsapp.replace(/\D/g, "");
+  const message = encodeURIComponent(
+    `Hello ${COMPANY.shortName}, I would like to inquire about your services.`,
+  );
+  const url = `https://wa.me/${phone}?text=${message}`;
 
   return (
     <motion.a

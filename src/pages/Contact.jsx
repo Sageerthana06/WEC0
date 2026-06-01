@@ -89,6 +89,11 @@ export default function Contact() {
         : "border-white/10 focus:border-cyan-500/50"
     }`;
 
+  const phone = COMPANY.whatsapp.replace(/\D/g, "");
+  const waMessage = encodeURIComponent(
+    `Hello ${COMPANY.shortName}, I would like to inquire about your services.`,
+  );
+
   return (
     <>
       <motion.div
@@ -294,7 +299,7 @@ export default function Contact() {
                     </ul>
 
                     <motion.a
-                      href={`https://wa.me/${COMPANY.whatsapp}`}
+                      href={`https://wa.me/${phone}?text=${waMessage}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-6 inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-semibold text-white hover:bg-green-600"

@@ -44,7 +44,8 @@ export default function GalleryInsertForm({
             { id: "products", label: "Products" },
             { id: "warehouse", label: "Warehouse" },
             { id: "events", label: "Events" },
-            { id: "promotion", label: "Promotion" }, // 👈 !
+            { id: "promotion", label: "Promotion" },
+            { id: "Promotion#", label: "Promotion#" }, // 👈 !
           ].map((c) => (
             <button
               key={c.id}
