@@ -87,7 +87,10 @@ export default function Home() {
         <div className="mx-auto max-w-4xl px-4 lg:px-8">
           <FadeInUp>
             <motion.div
-              whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
+              whileHover={{
+                y: -8,
+                boxShadow: "0 20px 40px rgba(25, 7, 17, 0.3)",
+              }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <GlassCard className="text-center !p-12">

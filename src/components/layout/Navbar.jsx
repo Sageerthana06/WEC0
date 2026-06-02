@@ -114,11 +114,11 @@ export default function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <ul className="flex flex-row items-center justify-start gap-0 pr-1 md:justify-center">
+          <ul className="flex flex-row items-center justify-start gap-3 pr-2 md:justify-center">
             {mainNavLinks.map((link, index) => (
               <motion.div
                 key={link.to}
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 1, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 + index * 0.05 }}
               >
@@ -183,7 +183,7 @@ export default function Navbar() {
           <motion.div
             whileHover={{
               scale: 1.05,
-              boxShadow: "0 0 30px rgba(6, 182, 212, 0.5)",
+              boxShadow: "0 0 30px rgba(63, 11, 234, 0.5)",
             }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
