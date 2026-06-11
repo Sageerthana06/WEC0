@@ -7,7 +7,6 @@ import {
   StaggerItem,
   FloatingElement,
 } from "../components/animations/AnimatedComponents";
-import { team } from "../data/initialData";
 import { FaGlobe, FaAward, FaHandshake, FaChartLine } from "react-icons/fa";
 import { useData } from "../context/DataContext";
 
@@ -35,7 +34,7 @@ const achievements = [
 ];
 
 export default function About() {
-  const { siteSettings } = useData();
+  const { siteSettings, team } = useData();
 
   return (
     <div className="pt-24">
@@ -62,7 +61,8 @@ export default function About() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {siteSettings?.company?.name || "World Entrepreneurs Export & Import (PVT) LTD"}
+              {siteSettings?.company?.name ||
+                "World Entrepreneurs Export & Import (PVT) LTD"}
             </motion.h1>
             <motion.p
               className="mx-auto mt-4 max-w-2xl text-slate-400"
@@ -70,15 +70,15 @@ export default function About() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              A leading Sri Lankan export and import company connecting local
-              excellence with global markets.
+              A leading Sri Lankan company connecting local excellence with
+              global opportunities.
             </motion.p>
           </motion.div>
         </div>
       </section>
 
       {/* Our Story Section */}
-      <section className="pb-24">
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <FadeInUp>
@@ -90,23 +90,20 @@ export default function About() {
               <p className="text-slate-400 leading-relaxed whitespace-pre-wrap">
                 {siteSettings?.about?.history || "Company history..."}
               </p>
-              <p className="mt-4 text-slate-400 leading-relaxed"></p>
             </FadeInUp>
-            <motion.video
+            <motion.div
               initial={{ opacity: 0, x: 30, scale: 0.9 }}
               whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.55, rotateY: 5 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="rounded-2xl shadow-2xl w-full aspect-square object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
+              className="rounded-2xl shadow-2xl w-full aspect-square bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center"
             >
-              <source src="/vid/video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </motion.video>
+              <div className="text-center p-8">
+                <div className="text-6xl mb-4">🏢</div>
+                <p className="text-slate-400">Company Image</p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -138,10 +135,10 @@ export default function About() {
             >
               <GlassCard>
                 <h3 className="font-display text-2xl font-bold text-cyan-400">
-                  Mission
+                  Our Mission
                 </h3>
-                <p className="mt-4 text-slate-400 whitespace-pre-wrap">
-                  {siteSettings?.about?.mission || "Mission..."}
+                <p className="mt-4 text-slate-400 leading-relaxed">
+                  {siteSettings?.about?.mission || "Mission statement..."}
                 </p>
               </GlassCard>
             </motion.div>
@@ -154,38 +151,105 @@ export default function About() {
             >
               <GlassCard>
                 <h3 className="font-display text-2xl font-bold text-amber-400">
-                  Vision
+                  Our Vision
                 </h3>
-                <p className="mt-4 text-slate-400 whitespace-pre-wrap">
-                  {siteSettings?.about?.vision || "Vision..."}
+                <p className="mt-4 text-slate-400 leading-relaxed">
+                  {siteSettings?.about?.vision || "Vision statement..."}
                 </p>
               </GlassCard>
             </motion.div>
           </motion.div>
         </div>
       </section>
+
+      {/* Achievements Section */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <SectionTitle
+            label="Our Achievements"
+            title="What We Deliver"
+            subtitle="Building trust through excellence and innovation"
+          />
+          <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {achievements.map((achievement, i) => {
+              const Icon = achievement.icon;
+              return (
+                <StaggerItem key={i}>
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <GlassCard className="text-center">
+                      <div className="flex justify-center text-4xl text-cyan-400">
+                        <Icon />
+                      </div>
+                      <h3 className="mt-4 font-semibold text-white">
+                        {achievement.title}
+                      </h3>
+                      <p className="mt-2 text-sm text-slate-400">
+                        {achievement.desc}
+                      </p>
+                    </GlassCard>
+                  </motion.div>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-24 bg-slate-950/50">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <SectionTitle
+            label="Our Team"
+            title="Meet the Experts"
+            subtitle="Dedicated professionals driving our success"
+          />
+          <StaggerContainer className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {team.map((member) => (
+              <StaggerItem key={member.id}>
+                <motion.div
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <GlassCard className="overflow-hidden">
+                    <motion.div
+                      className="h-48 w-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden rounded-lg mb-4"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextElementSibling.style.display = "flex";
+                        }}
+                      />
+                      <div
+                        className="hidden w-full h-full items-center justify-center text-4xl"
+                        style={{ display: "flex" }}
+                      >
+                        👤
+                      </div>
+                    </motion.div>
+                    <h3 className="font-semibold text-white text-lg">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-medium text-cyan-400">
+                      {member.role}
+                    </p>
+                    <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+                      {member.bio}
+                    </p>
+                  </GlassCard>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
     </div>
   );
 }
-{
-  /* About.js கோப்பில் மாற்ற வேண்டிய பகுதி */
-}
-<section className="py-24 bg-slate-950/50">
-  <div className="mx-auto max-w-7xl px-4 lg:px-8">
-    {/* SectionTitle-க்கு பதிலாக படத்தை நேரடியாகப் பயன்படுத்துதல் */}
-    <div className="text-center mb-12">
-      <span className="text-sm font-semibold uppercase tracking-widest text-cyan-400">
-        Our Team
-      </span>
-      <img
-        src="/path/to/your/image_5203fb.png"
-        alt="Meet the Experts"
-        className="mx-auto mt-4"
-      />
-    </div>
-
-    <StaggerContainer className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      {/* உங்கள் டீம் மெம்பர்கள் கோட் */}
-    </StaggerContainer>
-  </div>
-</section>;

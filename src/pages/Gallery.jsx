@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaPlay } from "react-icons/fa";
 import SectionTitle from "../components/ui/SectionTitle";
+import GalleryImage from "../components/gallery/GalleryImage";
 import { useData } from "../context/DataContext";
 
 const tabs = [
@@ -20,8 +21,7 @@ export default function Gallery() {
 
   const filtered = useMemo(() => {
     if (tab === "all") return gallery;
-    if (tab === "video")
-      return gallery.filter((g) => g.type === "video");
+    if (tab === "video") return gallery.filter((g) => g.type === "video");
     return gallery.filter((g) => g.category === tab);
   }, [tab, gallery]);
 
@@ -109,11 +109,10 @@ export default function Gallery() {
                       transition={{ duration: 0.5 }}
                       className="aspect-square overflow-hidden"
                     >
-                      <img
-                        src={item.image}
+                      <GalleryImage
+                        item={item}
                         alt={item.title}
                         className="h-full w-full object-cover"
-                        loading="lazy"
                       />
                     </motion.div>
                     <motion.div

@@ -25,16 +25,21 @@ export const INITIAL_SITE_SETTINGS = {
   company: COMPANY,
   home: {
     heroTagline: "World Entrepreneurs Export & Import (PVT) LTD",
-    heroSubtitle: "Connecting Sri Lanka to the world through premium export, import, logistics, and trade consulting services.",
+    heroSubtitle:
+      "Connecting Sri Lanka to the world through premium export, import, logistics, and trade consulting services.",
   },
   about: {
-    history: "World Entrepreneurs Company was founded to empower individuals through entrepreneurship, leadership development, and direct marketing opportunities. Since its establishment, the company has focused on professional growth, innovation, and creating pathways to success for its team members and partners. \"Empowering People, Building Leaders.\"",
-    mission: "Welcome to our company. Our mission is to create opportunities, develop leadership, and empower individuals to achieve their personal and professional goals. Through innovation, teamwork, and dedication, we strive to provide exceptional value to our customers and partners. Thank you for being part of our journey towards growth and success",
-    vision: "To become a leading marketing company that empowers Sri Lankan youth, enabling them to establish branch companies across the nation and create sustainable employment opportunities.",
+    history:
+      'World Entrepreneurs Company was founded to empower individuals through entrepreneurship, leadership development, and direct marketing opportunities. Since its establishment, the company has focused on professional growth, innovation, and creating pathways to success for its team members and partners. "Empowering People, Building Leaders."',
+    mission:
+      "Welcome to our company. Our mission is to create opportunities, develop leadership, and empower individuals to achieve their personal and professional goals. Through innovation, teamwork, and dedication, we strive to provide exceptional value to our customers and partners. Thank you for being part of our journey towards growth and success",
+    vision:
+      "To become a leading marketing company that empowers Sri Lankan youth, enabling them to establish branch companies across the nation and create sustainable employment opportunities.",
   },
   map: {
-    embedUrl: "https://www.google.com/maps/d/u/0/embed?mid=1IXoo2HTLpkdYVrEc2vZ6wkq-GmJ7ZZ0&ehbc=2E312F"
-  }
+    embedUrl:
+      "https://www.google.com/maps/d/u/0/embed?mid=1IXoo2HTLpkdYVrEc2vZ6wkq-GmJ7ZZ0&ehbc=2E312F",
+  },
 };
 
 /** Services — id, title, description, icon, image, featured */
@@ -415,11 +420,63 @@ export const partners = [
   "ISO Certified",
 ];
 
-export const team = [];
+export const team = [
+  {
+    id: 1,
+    name: "Mr. Thilak Gunasekara",
+    role: "Founder & CEO",
+    image: "https://via.placeholder.com/300x300?text=CEO",
+    bio: "20+ years in trade and logistics with deep expertise in export-import operations.",
+  },
+  {
+    id: 2,
+    name: "Ms. Harini De Silva",
+    role: "Operations Manager",
+    image: "https://via.placeholder.com/300x300?text=Operations",
+    bio: "Expert in supply chain management and customs clearance procedures.",
+  },
+  {
+    id: 3,
+    name: "Mr. Arjun Perera",
+    role: "Business Development",
+    image: "https://via.placeholder.com/300x300?text=BD+Head",
+    bio: "Specializes in expanding markets and building strategic partnerships.",
+  },
+  {
+    id: 4,
+    name: "Ms. Fathima Ahmed",
+    role: "HR & Admin Manager",
+    image: "https://via.placeholder.com/300x300?text=HR",
+    bio: "Leads team development and organizational excellence programs.",
+  },
+];
 
 export const stats = [
   { label: "YEARS EXPERIENCE", value: 7, suffix: "+" },
   { label: "CURRENT STAFF", value: 250, suffix: "+" },
   { label: "BRANCH", value: 8, suffix: "+" },
   { label: "RETENTION RATE", value: 99, suffix: "%" },
+];
+
+export const achievements = [
+  {
+    icon: "globe",
+    title: "45+ Countries",
+    desc: "Active trade partnerships worldwide",
+  },
+  {
+    icon: "award",
+    title: "ISO Certified",
+    desc: "Quality management standards",
+  },
+  {
+    icon: "handshake",
+    title: "850+ Clients",
+    desc: "Long-term business relationships",
+  },
+  {
+    icon: "chart-line",
+    title: "18 Years",
+    desc: "Industry leadership since 2006",
+  },
 ];

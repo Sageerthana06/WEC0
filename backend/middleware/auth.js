@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Admin from "../models/Admin.js";
+import { pool } from "../config/db.js";
 
 /**
  * Protect routes — verifies JWT token from Authorization header
@@ -14,21 +14,44 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.admin = await Admin.findById(decoded.id).select("-password");
 
-      if (!req.admin) {
-        return res.status(401).json({ message: "Admin not found" });
+      // Fetch admin from PostgreSQL
+      const query = `
+        SELECT id, username, email, role, is_active
+        FROM admins WHERE id = $1
+      `;
+      const result = await pool.query(query, [decoded.id]);
+
+      if (result.rows.length === 0) {
+        return res.status(401).json({
+          success: false,
+          message: "Admin not found",
+        });
       }
 
+      const admin = result.rows[0];
+
+      if (!admin.is_active) {
+        return res.status(401).json({
+          success: false,
+          message: "Admin account is inactive",
+        });
+      }
+
+      req.admin = admin;
       next();
     } catch (error) {
       console.error("Auth error:", error.message);
-      return res.status(401).json({ message: "Not authorized, token failed" });
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized, token failed",
+      });
     }
-  }
-
-  if (!token) {
-    return res.status(401).json({ message: "Not authorized, no token" });
+  } else {
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, no token",
+    });
   }
 };
 

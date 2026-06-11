@@ -1,165 +1,67 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { initialServices, initialGallery, INITIAL_SITE_SETTINGS } from "../data/initialData";
-import { getImage } from "../data/catalogTypes";
-import { generateId, loadFromStorage, saveToStorage } from "../utils/storage";
-import { saveGalleryImage, deleteGalleryImage } from "../utils/galleryImageDB";
+import axios from "axios";
+import {
+  initialServices,
+  initialGallery,
+  INITIAL_SITE_SETTINGS,
+  team,
+  stats,
+} from "../data/initialData";
 
 const DataContext = createContext(null);
-
-const KEYS = {
-  services: "wEc-services",
-  gallery: "wEc-gallery",
-  messages: "wEc-messages",
-  siteSettings: "wEc-siteSettings",
-};
-
-function normalizeProduct(p) {
-  return {
-    ...p,
-    title: p.title || p.name,
-    image: getImage(p),
-  };
-}
-
-function normalizeGalleryItem(g) {
-  return {
-    ...g,
-    image: getImage(g),
-    videoUrl: g.videoUrl || (g.type === "video" ? g.url : undefined),
-  };
-}
-
-function stripGalleryForStorage(items) {
-  return items.map(
-    ({
-      id,
-      title,
-      description,
-      icon,
-      image,
-      category,
-      type,
-      videoUrl,
-      storageId,
-      uploaded,
-      featured,
-    }) => ({
-      id,
-      title,
-      description: description || "",
-      icon: icon || category || "box",
-      image,
-      category,
-      type: type || "image",
-      videoUrl,
-      storageId,
-      uploaded,
-      featured: Boolean(featured),
-    }),
-  );
-}
+const API_URL = "http://localhost:5000/api";
 
 export function DataProvider({ children }) {
   const [services, setServices] = useState(initialServices);
-  const [gallery, setGallery] = useState(() =>
-    loadFromStorage(KEYS.gallery, initialGallery).map(normalizeGalleryItem),
-  );
-  const [messages, setMessages] = useState(() =>
-    loadFromStorage(KEYS.messages, []),
-  );
-  const [siteSettings, setSiteSettings] = useState(() =>
-    loadFromStorage(KEYS.siteSettings, INITIAL_SITE_SETTINGS),
-  );
+  const [gallery, setGallery] = useState(initialGallery);
+  const [siteSettings, setSiteSettings] = useState(INITIAL_SITE_SETTINGS);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    saveToStorage(KEYS.services, services);
-  }, [services]);
-
-  useEffect(() => {
-    saveToStorage(KEYS.gallery, stripGalleryForStorage(gallery));
-  }, [gallery]);
-
-  useEffect(() => {
-    saveToStorage(KEYS.messages, messages);
-  }, [messages]);
-
-  useEffect(() => {
-    saveToStorage(KEYS.siteSettings, siteSettings);
-  }, [siteSettings]);
-
-  const addMessage = (msg) => {
-    const entry = {
-      id: generateId("msg"),
-      ...msg,
-      date: new Date().toISOString(),
-      read: false,
-    };
-    setMessages((prev) => [entry, ...prev]);
-    return entry;
-  };
-
-  const markMessageRead = (id) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, read: true } : m)),
-    );
-  };
-
-  const deleteMessage = (id) => {
-    setMessages((prev) => prev.filter((m) => m.id !== id));
-  };
-
-  const addGalleryPhoto = async (dataUrl, title, category = "products") => {
-    const storageId = generateId("img");
-    await saveGalleryImage(storageId, dataUrl);
-    const entry = {
-      id: generateId("gal"),
-      title: title || "My Photo",
-      description: "",
-      icon:
-        category === "products"
-          ? "box"
-          : category === "warehouse"
-            ? "warehouse"
-            : category === "promotion"
-              ? "star"
-              : "event",
-      image: dataUrl,
-      category,
-      type: "image",
-      storageId,
-      uploaded: true,
-      featured: false,
-    };
-    setGallery((prev) => [entry, ...prev]);
-    return entry;
-  };
-
-  const removeGalleryPhoto = async (id) => {
-    const item = gallery.find((g) => g.id === id);
-    if (item?.storageId) {
+    const fetchData = async () => {
       try {
-        await deleteGalleryImage(item.storageId);
-      } catch {
-        /* ignore */
+        const [sRes, gRes] = await Promise.all([
+          axios.get(`${API_URL}/services`),
+          axios.get(`${API_URL}/gallery`),
+        ]);
+        if (sRes.data && sRes.data.length > 0) {
+          setServices(sRes.data);
+        }
+        if (gRes.data && gRes.data.length > 0) {
+          setGallery(gRes.data);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        // Keep using initial data as fallback
       }
-    }
-    setGallery((prev) => prev.filter((g) => g.id !== id));
+    };
+    fetchData();
+  }, []);
+
+  const serviceCrud = {
+    add: async (item) => {
+      const res = await axios.post(`${API_URL}/services`, item);
+      setServices((prev) => [...prev, res.data]);
+    },
+    remove: async (id) => {
+      await axios.delete(`${API_URL}/services/${id}`);
+      setServices((prev) => prev.filter((s) => s.id !== id));
+    },
   };
 
-  const crud = (setter) => ({
-    add: (item) => setter((prev) => [...prev, { ...item, id: generateId() }]),
-    update: (id, updates) =>
-      setter((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, ...updates } : item)),
-      ),
-    remove: (id) => setter((prev) => prev.filter((item) => item.id !== id)),
-  });
+  const galleryCrud = {
+    add: async (item) => {
+      const res = await axios.post(`${API_URL}/gallery`, item);
+      setGallery((prev) => [res.data, ...prev]);
+    },
+    remove: async (id) => {
+      await axios.delete(`${API_URL}/gallery/${id}`);
+      setGallery((prev) => prev.filter((g) => g.id !== id));
+    },
+  };
 
-  const serviceCrud = crud(setServices);
-  const galleryCrud = crud(setGallery);
-
-  const updateSiteSettings = (newSettings) => {
-    setSiteSettings(newSettings);
+  const addMessage = (message) => {
+    setMessages((prev) => [...prev, message]);
   };
 
   return (
@@ -167,18 +69,13 @@ export function DataProvider({ children }) {
       value={{
         services,
         gallery,
+        siteSettings,
+        team,
+        stats,
         messages,
         addMessage,
-        markMessageRead,
-        deleteMessage,
-        addGalleryPhoto,
-        removeGalleryPhoto,
         serviceCrud,
         galleryCrud,
-        setServices,
-        setGallery,
-        siteSettings,
-        updateSiteSettings,
       }}
     >
       {children}
@@ -186,8 +83,4 @@ export function DataProvider({ children }) {
   );
 }
 
-export function useData() {
-  const ctx = useContext(DataContext);
-  if (!ctx) throw new Error("useData must be used within DataProvider");
-  return ctx;
-}
+export const useData = () => useContext(DataContext);

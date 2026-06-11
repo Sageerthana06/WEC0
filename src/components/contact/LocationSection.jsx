@@ -9,6 +9,7 @@ import {
   FaExpand,
   FaWhatsapp,
 } from "react-icons/fa";
+import AnimatedModal from "../ui/AnimatedModal";
 import { useData } from "../../context/DataContext";
 
 export default function LocationSection() {
@@ -99,8 +100,11 @@ export default function LocationSection() {
                   <FaExpand /> View Full Map
                 </motion.button>
                 <motion.a
-                  href="https://maps.google.com/?q=$"
+                  href={`https://maps.google.com/?q=${encodeURIComponent(
+                    company.address || "",
+                  )}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-xl border-2 border-sky-500 bg-white/80 px-6 py-3 text-sm font-semibold text-sky-700"
                 >
                   <FaDirections /> Get Directions
@@ -108,6 +112,7 @@ export default function LocationSection() {
                 <motion.a
                   href={`https://wa.me/${phone}?text=${waMessage}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 text-sm font-semibold text-white shadow-lg"
                 >
                   <FaWhatsapp /> WhatsApp

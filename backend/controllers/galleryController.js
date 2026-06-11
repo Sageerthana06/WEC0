@@ -1,4 +1,4 @@
-import Gallery from "../models/Gallery.js";
+import { pool } from "../config/db.js";
 
 // @desc    Get all gallery items
 // @route   GET /api/gallery
@@ -6,18 +6,31 @@ import Gallery from "../models/Gallery.js";
 export const getGallery = async (req, res) => {
   try {
     const { category } = req.query;
-    const filter = {};
+
+    let query = "SELECT * FROM gallery";
+    const params = [];
+
     if (category && category !== "all") {
-      if (category === "video") {
-        filter.type = "video";
-      } else {
-        filter.category = category;
-      }
+      query += " WHERE category = $1";
+      params.push(category);
     }
-    const items = await Gallery.find(filter).sort({ createdAt: -1 });
-    res.json(items);
+
+    query += " ORDER BY created_at DESC";
+
+    const result = await pool.query(query, params);
+
+    res.json({
+      success: true,
+      count: result.rows.length,
+      data: result.rows,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error fetching gallery:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -26,13 +39,27 @@ export const getGallery = async (req, res) => {
 // @access  Public
 export const getGalleryById = async (req, res) => {
   try {
-    const item = await Gallery.findById(req.params.id);
-    if (!item) {
-      return res.status(404).json({ message: "Gallery item not found" });
+    const query = "SELECT * FROM gallery WHERE id = $1";
+    const result = await pool.query(query, [req.params.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery item not found",
+      });
     }
-    res.json(item);
+
+    res.json({
+      success: true,
+      data: result.rows[0],
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error fetching gallery item:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -41,21 +68,40 @@ export const getGalleryById = async (req, res) => {
 // @access  Admin
 export const createGalleryItem = async (req, res) => {
   try {
-    const { title, description, icon, image, category, type, videoUrl, featured } =
-      req.body;
-    const item = await Gallery.create({
+    const { title, description, image_url, category, display_order } = req.body;
+
+    if (!title || !image_url) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and image_url are required",
+      });
+    }
+
+    const query = `
+      INSERT INTO gallery (title, description, image_url, category, display_order)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
+
+    const result = await pool.query(query, [
       title,
-      description,
-      icon,
-      image,
-      category,
-      type,
-      videoUrl,
-      featured,
+      description || null,
+      image_url,
+      category || null,
+      display_order || null,
+    ]);
+
+    res.status(201).json({
+      success: true,
+      data: result.rows[0],
     });
-    res.status(201).json(item);
   } catch (error) {
-    res.status(400).json({ message: "Invalid data", error: error.message });
+    console.error("Error creating gallery item:", error);
+    res.status(400).json({
+      success: false,
+      message: "Invalid data",
+      error: error.message,
+    });
   }
 };
 
@@ -64,31 +110,43 @@ export const createGalleryItem = async (req, res) => {
 // @access  Admin
 export const updateGalleryItem = async (req, res) => {
   try {
-    const item = await Gallery.findById(req.params.id);
-    if (!item) {
-      return res.status(404).json({ message: "Gallery item not found" });
+    const { title, description, image_url, category, display_order } = req.body;
+
+    const query = `
+      UPDATE gallery
+      SET title = $1, description = $2, image_url = $3, category = $4,
+          display_order = $5, updated_at = NOW()
+      WHERE id = $6
+      RETURNING *
+    `;
+
+    const result = await pool.query(query, [
+      title,
+      description || null,
+      image_url,
+      category || null,
+      display_order || null,
+      req.params.id,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery item not found",
+      });
     }
 
-    const fields = [
-      "title",
-      "description",
-      "icon",
-      "image",
-      "category",
-      "type",
-      "videoUrl",
-      "featured",
-    ];
-    fields.forEach((field) => {
-      if (req.body[field] !== undefined) {
-        item[field] = req.body[field];
-      }
+    res.json({
+      success: true,
+      data: result.rows[0],
     });
-
-    const updated = await item.save();
-    res.json(updated);
   } catch (error) {
-    res.status(400).json({ message: "Update failed", error: error.message });
+    console.error("Error updating gallery item:", error);
+    res.status(400).json({
+      success: false,
+      message: "Update failed",
+      error: error.message,
+    });
   }
 };
 
@@ -97,13 +155,19 @@ export const updateGalleryItem = async (req, res) => {
 // @access  Admin
 export const deleteGalleryItem = async (req, res) => {
   try {
-    const item = await Gallery.findById(req.params.id);
-    if (!item) {
-      return res.status(404).json({ message: "Gallery item not found" });
-    }
-    await item.deleteOne();
-    res.json({ message: "Gallery item removed" });
+    const query = "DELETE FROM gallery WHERE id = $1";
+    await pool.query(query, [req.params.id]);
+
+    res.json({
+      success: true,
+      message: "Gallery item removed",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Delete failed", error: error.message });
+    console.error("Error deleting gallery item:", error);
+    res.status(500).json({
+      success: false,
+      message: "Delete failed",
+      error: error.message,
+    });
   }
 };

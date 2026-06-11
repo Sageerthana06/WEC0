@@ -1,47 +1,27 @@
-const DB_NAME = "wEc-gallery-images";
-const STORE = "photos";
-const DB_VERSION = 1;
+const express = require("express");
+const { Pool } = require("pg");
+const app = express();
+app.use(express.json());
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE);
-      }
-    };
-  });
-}
+// Neon
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-export async function saveGalleryImage(id, dataUrl) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).put(dataUrl, id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-}
+// DELETE API
+app.delete("/api/gallery/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM gallery WHERE id = $1", [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "தரவு கண்டறியப்படவில்லை" });
+    }
+    res.json({ message: "வெற்றிகரமாக நீக்கப்பட்டது" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "error" });
+  }
+});
 
-export async function getGalleryImage(id) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, "readonly");
-    const req = tx.objectStore(STORE).get(id);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-export async function deleteGalleryImage(id) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, "readwrite");
-    tx.objectStore(STORE).delete(id);
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-}
+app.listen(5000, () => console.log("Server running on port 5000"));

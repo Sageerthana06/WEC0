@@ -1,73 +1,152 @@
-import Message from "../models/Message.js";
+import { pool } from "../config/db.js";
 
 // @desc    Get all messages
-// @route   GET /api/messages
-// @access  Admin
 export const getMessages = async (req, res) => {
   try {
-    const messages = await Message.find({}).sort({ createdAt: -1 });
-    res.json(messages);
+    const query = "SELECT * FROM messages ORDER BY created_at DESC";
+    const result = await pool.query(query);
+
+    res.json({
+      success: true,
+      count: result.rows.length,
+      data: result.rows,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error fetching messages:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
-// @desc    Submit a contact message (from frontend contact form)
-// @route   POST /api/messages
-// @access  Public
+// @desc    Submit a contact message
 export const createMessage = async (req, res) => {
   try {
-    const { name, email, phone, subject, message, image } = req.body;
+    const { name, email, phone, subject, message } = req.body;
 
     if (!name || !email || !message) {
-      return res
-        .status(400)
-        .json({ message: "Name, email, and message are required" });
+      return res.status(400).json({
+        success: false,
+        message: "Name, email, and message are required",
+      });
     }
 
-    const msg = await Message.create({
+    const query = `
+      INSERT INTO messages (name, email, phone, subject, message, status)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `;
+
+    const result = await pool.query(query, [
       name,
       email,
-      phone,
-      subject,
+      phone || null,
+      subject || null,
       message,
-      image,
+      "new",
+    ]);
+
+    res.status(201).json({
+      success: true,
+      data: result.rows[0],
     });
-    res.status(201).json(msg);
   } catch (error) {
-    res.status(400).json({ message: "Invalid data", error: error.message });
+    console.error("Error creating message:", error);
+    res.status(400).json({
+      success: false,
+      message: "Invalid data",
+      error: error.message,
+    });
   }
 };
 
-// @desc    Mark message as read
-// @route   PUT /api/messages/:id/read
-// @access  Admin
-export const markMessageRead = async (req, res) => {
+// @desc    Get single message
+export const getMessageById = async (req, res) => {
   try {
-    const msg = await Message.findById(req.params.id);
-    if (!msg) {
-      return res.status(404).json({ message: "Message not found" });
+    const query = "SELECT * FROM messages WHERE id = $1";
+    const result = await pool.query(query, [req.params.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found",
+      });
     }
-    msg.read = true;
-    const updated = await msg.save();
-    res.json(updated);
+
+    res.json({
+      success: true,
+      data: result.rows[0],
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error fetching message:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Update message status
+export const updateMessageStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: "Status is required",
+      });
+    }
+
+    const query = `
+      UPDATE messages
+      SET status = $1, updated_at = NOW()
+      WHERE id = $2
+      RETURNING *
+    `;
+
+    const result = await pool.query(query, [status, req.params.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating message:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
 // @desc    Delete a message
-// @route   DELETE /api/messages/:id
-// @access  Admin
 export const deleteMessage = async (req, res) => {
   try {
-    const msg = await Message.findById(req.params.id);
-    if (!msg) {
-      return res.status(404).json({ message: "Message not found" });
-    }
-    await msg.deleteOne();
-    res.json({ message: "Message deleted" });
+    const query = "DELETE FROM messages WHERE id = $1";
+    await pool.query(query, [req.params.id]);
+
+    res.json({
+      success: true,
+      message: "Message deleted",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Delete failed", error: error.message });
+    console.error("Error deleting message:", error);
+    res.status(500).json({
+      success: false,
+      message: "Delete failed",
+      error: error.message,
+    });
   }
 };
