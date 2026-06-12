@@ -62,10 +62,18 @@ app.delete("/api/services/:id", async (req, res) => {
 app.get("/api/gallery", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM gallery ORDER BY id DESC");
-    res.json(result.rows);
+    res.json({
+      success: true,
+      count: result.rows.length,
+      data: result.rows,
+    });
   } catch (err) {
     console.error("Gallery GET error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 });
 
@@ -76,21 +84,41 @@ app.post("/api/gallery", async (req, res) => {
       "INSERT INTO gallery (title, category, image, type) VALUES ($1, $2, $3, $4) RETURNING *",
       [title, category || "all", image, type || "image"],
     );
-    res.json(result.rows[0]);
+    res.json({
+      success: true,
+      data: result.rows[0],
+    });
   } catch (err) {
     console.error("Gallery POST error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 });
 
 app.delete("/api/gallery/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query("DELETE FROM gallery WHERE id = $1", [id]);
-    res.json({ message: "Gallery item deleted" });
+    const result = await pool.query("DELETE FROM gallery WHERE id = $1", [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery item not found",
+      });
+    }
+    res.json({
+      success: true,
+      message: "Gallery item deleted",
+    });
   } catch (err) {
     console.error("Gallery DELETE error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 });
 

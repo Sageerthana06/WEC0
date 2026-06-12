@@ -1,27 +1,71 @@
-const express = require("express");
-const { Pool } = require("pg");
-const app = express();
-app.use(express.json());
+import api from "./api";
 
-// Neon
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
+const GALLERY_API = "/gallery";
 
-// DELETE API
-app.delete("/api/gallery/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query("DELETE FROM gallery WHERE id = $1", [id]);
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "தரவு கண்டறியப்படவில்லை" });
+export const galleryDB = {
+  // Get all gallery items
+  getAll: async () => {
+    try {
+      const response = await api.get(GALLERY_API);
+      return response.data.data || [];
+    } catch (error) {
+      console.error("Error fetching gallery:", error);
+      return [];
     }
-    res.json({ message: "வெற்றிகரமாக நீக்கப்பட்டது" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "error" });
-  }
-});
+  },
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+  // Get gallery by category
+  getByCategory: async (category) => {
+    try {
+      const response = await api.get(`${GALLERY_API}?category=${category}`);
+      return response.data.data || [];
+    } catch (error) {
+      console.error("Error fetching gallery by category:", error);
+      return [];
+    }
+  },
+
+  // Get single gallery item
+  getById: async (id) => {
+    try {
+      const response = await api.get(`${GALLERY_API}/${id}`);
+      return response.data.data || null;
+    } catch (error) {
+      console.error("Error fetching gallery item:", error);
+      return null;
+    }
+  },
+
+  // Add new gallery item
+  add: async (item) => {
+    try {
+      const response = await api.post(GALLERY_API, item);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error("Error adding gallery item:", error);
+      throw error;
+    }
+  },
+
+  // Update gallery item
+  update: async (id, item) => {
+    try {
+      const response = await api.put(`${GALLERY_API}/${id}`, item);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error("Error updating gallery item:", error);
+      throw error;
+    }
+  },
+
+  // Delete gallery item
+  delete: async (id) => {
+    try {
+      await api.delete(`${GALLERY_API}/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Error deleting gallery item:", error);
+      throw error;
+    }
+  },
+};

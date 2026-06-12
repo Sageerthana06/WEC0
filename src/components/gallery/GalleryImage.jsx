@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getImage } from "../../data/catalogTypes";
-import { getGalleryImage } from "../../utils/galleryImageDB";
 
 export default function GalleryImage({ item, className = "", alt }) {
   const [src, setSrc] = useState(getImage(item));
@@ -10,28 +9,13 @@ export default function GalleryImage({ item, className = "", alt }) {
     let cancelled = false;
     setFailed(false);
 
-    async function load() {
-      if (item.storageId) {
-        try {
-          const data = await getGalleryImage(item.storageId);
-          if (!cancelled) {
-            if (data) setSrc(data);
-            else setFailed(true);
-          }
-        } catch {
-          if (!cancelled) setFailed(true);
-        }
-      } else {
-        const img = getImage(item);
-        if (!cancelled) setSrc(img || "");
-      }
-    }
+    const img = getImage(item);
+    if (!cancelled) setSrc(img || "");
 
-    load();
     return () => {
       cancelled = true;
     };
-  }, [item.storageId, item.image, item.url]);
+  }, [item.image, item.url, item.thumbnail]);
 
   if (failed || !src) {
     return (

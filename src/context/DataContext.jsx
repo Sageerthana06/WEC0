@@ -27,8 +27,8 @@ export function DataProvider({ children }) {
         if (sRes.data && sRes.data.length > 0) {
           setServices(sRes.data);
         }
-        if (gRes.data && gRes.data.length > 0) {
-          setGallery(gRes.data);
+        if (gRes.data && gRes.data.data && gRes.data.data.length > 0) {
+          setGallery(gRes.data.data);
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -52,7 +52,8 @@ export function DataProvider({ children }) {
   const galleryCrud = {
     add: async (item) => {
       const res = await axios.post(`${API_URL}/gallery`, item);
-      setGallery((prev) => [res.data, ...prev]);
+      const newItem = res.data.data || res.data;
+      setGallery((prev) => [newItem, ...prev]);
     },
     remove: async (id) => {
       await axios.delete(`${API_URL}/gallery/${id}`);
