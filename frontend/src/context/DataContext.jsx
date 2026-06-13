@@ -51,14 +51,41 @@ export function DataProvider({ children }) {
 
   const galleryCrud = {
     add: async (item) => {
-      const res = await axios.post(`${API_URL}/gallery`, item);
+      // Convert 'image' to 'image_url' for backend compatibility
+      const payload = {
+        ...item,
+        image_url: item.image || item.image_url,
+      };
+      delete payload.image;
+      const res = await axios.post(`${API_URL}/gallery`, payload);
       const newItem = res.data.data || res.data;
       setGallery((prev) => [newItem, ...prev]);
+      return newItem;
+    },
+    update: async (id, item) => {
+      const payload = {
+        ...item,
+        image_url: item.image || item.image_url,
+      };
+      delete payload.image;
+      const res = await axios.put(`${API_URL}/gallery/${id}`, payload);
+      const updated = res.data.data || res.data;
+      setGallery((prev) => prev.map((g) => (g.id === id ? updated : g)));
+      return updated;
     },
     remove: async (id) => {
       await axios.delete(`${API_URL}/gallery/${id}`);
       setGallery((prev) => prev.filter((g) => g.id !== id));
     },
+  };
+
+  const addGalleryPhoto = async (dataUrl, photoTitle, category) => {
+    return galleryCrud.add({
+      title: photoTitle,
+      image_url: dataUrl,
+      category,
+      description: "",
+    });
   };
 
   const addMessage = (message) => {
@@ -77,6 +104,7 @@ export function DataProvider({ children }) {
         addMessage,
         serviceCrud,
         galleryCrud,
+        addGalleryPhoto,
       }}
     >
       {children}
