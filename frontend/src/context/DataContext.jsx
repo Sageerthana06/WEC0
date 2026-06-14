@@ -11,7 +11,7 @@ import {
 const DataContext = createContext(null);
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "htpp://dynamic-simplicity-production-f30c.up.railway.app/api";
+  "https://perpetual-clarity-production-fe88.up.railway.app/api";
 
 https: export function DataProvider({ children }) {
   const [services, setServices] = useState(initialServices);
