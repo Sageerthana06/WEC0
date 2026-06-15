@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import pg from "pg";
 import dotenv from "dotenv";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 const { Pool } = pg;
@@ -182,6 +183,9 @@ app.delete("/api/messages/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// --- Admin Routes ---
+app.use("/api/admin", adminRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
