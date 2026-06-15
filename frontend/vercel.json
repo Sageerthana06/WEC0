@@ -3,7 +3,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "env": {
-    "VITE_API_URL": "@vite_api_url"
+    "VITE_API_URL": "https://perpetual-clarity-production-fe88.up.railway.app/api"
   },
   "rewrites": [
     {
