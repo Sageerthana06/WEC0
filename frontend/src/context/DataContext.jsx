@@ -13,7 +13,7 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   "https://perpetual-clarity-production-fe88.up.railway.app/api";
 
-https: export function DataProvider({ children }) {
+export function DataProvider({ children }) {
   const [services, setServices] = useState(initialServices);
   const [gallery, setGallery] = useState(initialGallery);
   const [siteSettings, setSiteSettings] = useState(INITIAL_SITE_SETTINGS);
