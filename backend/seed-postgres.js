@@ -1,7 +1,13 @@
 import dotenv from "dotenv";
-import { pool } from "./config/db.js";
+import pg from "pg";
 
 dotenv.config();
+
+const { Pool } = pg;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 const services = [
   {
@@ -55,73 +61,43 @@ const services = [
 ];
 
 const gallery = [
-  {
-    title: "Chairman",
-    category: "promotion",
-    image: "/photo/chairman.jpg",
-    type: "image",
-  },
+  { title: "Chairman", category: "promotion", image: "/photo/chairman.jpg", type: "image" },
   { title: "HR", category: "promotion", image: "/photo/hr.jpg", type: "image" },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/1.jpg",
-    type: "image",
-  },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/4.jpg",
-    type: "image",
-  },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/3.jpg",
-    type: "image",
-  },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/2.jpg",
-    type: "image",
-  },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/5.jpg",
-    type: "image",
-  },
-  {
-    title: "Manager",
-    category: "promotion",
-    image: "/photo/6.jpg",
-    type: "image",
-  },
-  {
-    title: "Team Photo 1",
-    category: "events",
-    image: "/photo/sport.jpg",
-    type: "image",
-  },
-  {
-    title: "Team Photo 2",
-    category: "events",
-    image: "/photo/sport2.jpg",
-    type: "image",
-  },
-  {
-    title: "Branch 1",
-    category: "New Branch",
-    image: "/photo/branch1.jpg",
-    type: "image",
-  },
-  {
-    title: "Branch 2",
-    category: "New Branch",
-    image: "/photo/branch2.jpg",
-    type: "image",
-  },
+  { title: "Manager", category: "promotion", image: "/photo/1.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/4.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/3.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/2.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/5.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/6.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/7.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/8.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/9.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/10.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/11.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/12.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/13.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/14.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/15.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/16.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/17.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/18.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/19.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/20.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/21.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/a.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/b.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/c.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/d.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/e.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/f.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/g.jpg", type: "image" },
+  { title: "Manager", category: "promotion", image: "/photo/h.jpg", type: "image" },
+  { title: "Team Photo 1", category: "events", image: "/photo/sport.jpg", type: "image" },
+  { title: "Team Photo 2", category: "events", image: "/photo/sport2.jpg", type: "image" },
+  { title: "Manager", category: "events", image: "/photo/j.jpg", type: "image" },
+  { title: "Branch 1", category: "New Branch", image: "/photo/branch1.jpg", type: "image" },
+  { title: "Branch 2", category: "New Branch", image: "/photo/branch2.jpg", type: "image" },
+  { title: "Branch 3", category: "New Branch", image: "/photo/branch3.jpg", type: "image" },
 ];
 
 async function run() {
